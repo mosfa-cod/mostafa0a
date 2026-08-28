@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أكاديمية الأستاذ مصطفى عبد العال دحروج - AI Powered</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            min-height: 100vh;
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        body.dark-mode .glass-card {
+            background: rgba(30, 41, 59, 0.95);
+            color: white;
+        }
+
+        .api-key-section {
+            background: #fef3c7;
+            border: 2px dashed #f59e0b;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        body.dark-mode .api-key-section {
+            background: #451a03;
+            border-color: #fbbf24;
+        }
+
+        .api-input {
+            width: 100%;
+            max-width: 500px;
+            padding: 15px;
+            border-radius: 15px;
+            border: 2px solid #e5e7eb;
+            font-size: 1rem;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .teacher-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            margin: 0 auto 20px;
+            border: 4px solid white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .talking { animation: bounce 0.5s infinite alternate; }
+        @keyframes bounce { from { transform: scale(1); } to { transform: scale(1.1); } }
+
+        .word-image {
+            width: 300px;
+            height: 300px;
+            border-radius: 20px;
+            object-fit: cover;
+            margin: 0 auto 20px;
+            display: block;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        .letter-box {
+            width: 75px;
+            height: 75px;
+            background: #f3f4f6;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            font-weight: bold;
+            margin: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        body.dark-mode .letter-box {
+            background: #374151;
+            color: white;
+        }
+
+        .letter-box.active {
+            background: #fbbf24;
+            color: white;
+            transform: translateY(-10px) scale(1.1);
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border-radius: 50px;
+            border: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:hover { transform: translateY(-3px); }
+        .btn-primary { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; }
+        .btn-secondary { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+        .btn-ai { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
+
+        .mic-btn {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            font-size: 55px;
+            cursor: pointer;
+            box-shadow: 0 15px 35px rgba(239, 68, 68, 0.4);
+            transition: all 0.3s;
+        }
+
+        .mic-btn:hover { transform: scale(1.1); }
+        .mic-btn.listening { animation: mic-pulse 1.2s infinite; }
+
+        @keyframes mic-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 35px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f4f6;
+            border-top: 5px solid #6366f1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .result-success { background: #10b981; color: white; padding: 20px; border-radius: 20px; font-size: 1.5rem; font-weight: bold; }
+        .result-error { background: #ef4444; color: white; padding: 20px; border-radius: 20px; font-size: 1.5rem; font-weight: bold; }
+
+        .hidden { display: none !important; }
+
+        .controls {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .icon-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .lang-badge {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .speech-bubble {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        body.dark-mode .speech-bubble { background: #1e3a8a; color: #bfdbfe; }
+        body.dark-mode .lang-badge { background: #1f2937; color: white; }
+
+        @media (max-width: 768px) {
+            .word-image { width: 250px; height: 250px; }
+            .letter-box { width: 55px; height: 55px; font-size: 1.8rem; }
+            .mic-btn { width: 110px; height: 110px; font-size: 45px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Controls -->
+    <div class="controls">
+        <button class="icon-btn" onclick="toggleTheme()">🌙</button>
+        <button class="icon-btn" onclick="toggleLanguage()">🌍</button>
+    </div>
+    <div class="lang-badge" id="lang-badge">🇪🇬 العربية</div>
+
+    <div class="container mx-auto px-4 py-6 max-w-5xl">
+        <!-- Header -->
+        <div class="text-center text-white mb-6">
+            <div class="teacher-avatar" id="avatar">👨‍🏫</div>
+            <h1 class="text-4xl font-black mb-2">أكاديمية الأستاذ مصطفى</h1>
+            <p class="text-xl">عبد العال دحروج - مع الذكاء الاصطناعي 🤖</p>
+        </div>
+
+        <!-- API Key Section -->
+        <div class="glass-card mb-6">
+            <div class="api-key-section" id="api-section">
+                <h3 class="text-xl font-bold mb-3">🔑 أدخل مفتاح OpenAI API</h3>
+                <p class="mb-3 opacity-80">لتوليد كلمات وصور ذكية غير محدودة!</p>
+                <input type="password" id="api-key" class="api-input" placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxx">
+                <br>
+                <button class="btn btn-primary" onclick="saveApiKey()">💾 حفظ المفتاح</button>
+                <p class="mt-3 text-sm opacity-70">
+                    <a href="https://platform.openai.com/api-keys" target="_blank" style="color: #6366f1; text-decoration: underline;">
+                        احصل على مفتاح مجاني من OpenAI
+                    </a>
+                </p>
+            </div>
+            <div id="api-status" class="hidden text-center text-green-600 font-bold">
+                ✅ المفتاح محفوظ! جاهز لتوليد الكلمات الذكية
+            </div>
+        </div>
+
+        <!-- Main App -->
+        <div class="glass-card">
+            <div class="speech-bubble" id="bubble">
+                أهلاً بك! أضف مفتاح API أولاً، ثم اضغط "كلمة ذكية" لتوليد كلمات جديدة! 🚀
+            </div>
+
+            <!-- Loading -->
+            <div id="loading" class="hidden text-center py-10">
+                <div class="loading mb-4"></div>
+                <p class="text-xl font-bold" id="loading-text">جاري توليد الكلمة بالذكاء الاصطناعي...</p>
+            </div>
+
+            <!-- Word Display -->
+            <div id="word-area" class="hidden text-center">
+                <img id="word-img" class="word-image" src="" alt="Word">
+                <h2 id="word-text" class="text-5xl font-black mb-4"></h2>
+                <div id="letters" class="flex flex-wrap justify-center gap-2 mb-4"></div>
+                <p id="meaning" class="text-xl opacity-80 mb-4"></p>
+                <p class="text-sm text-purple-600 font-bold">✨ تم توليد هذه الكلمة بالذكاء الاصطناعي</p>
+            </div>
+
+            <!-- Empty State -->
+            <div id="empty-area" class="text-center py-10">
+                <div class="text-7xl mb-4">🎯</div>
+                <p class="text-xl opacity-70">اضغط "كلمة ذكية" لتوليد كلمة جديدة!</p>
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex flex-wrap justify-center gap-3 mb-6">
+                <button class="btn btn-ai" onclick="generateAIWord()">
+                    🤖 كلمة ذكية
+                </button>
+                <button class="btn btn-primary" onclick="generateAImage()">
+                    🎨 صورة ذكية
+                </button>
+                <button class="btn btn-secondary" onclick="hearWord()">
+                    🔊 اسمع الكلمة
+                </button>
+            </div>
+
+            <!-- Mic -->
+            <div class="text-center border-t-2 pt-6">
+                <p class="text-lg font-bold mb-3" id="mic-label">🎤 نطق الكلمة:</p>
+                <button class="mic-btn" id="mic-btn" onclick="toggleMic()">🎙️</button>
+                <p id="mic-status" class="mt-3 opacity-70">اضغط الميكروفون وانطق</p>
+                <p id="debug" class="text-sm opacity-50 mt-2"></p>
+                <div id="result" class="hidden mt-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== CONFIG ==========
+        let API_KEY = localStorage.getItem('openai_api_key') || '';
+        let lang = 'ar';
+        let currentWord = null;
+        let isListening = false;
+        let recognition = null;
+        let synth = window.speechSynthesis;
+
+        // ========== INIT ==========
+        window.onload = () => {
+            if (API_KEY) {
+                document.getElementById('api-section').classList.add('hidden');
+                document.getElementById('api-status').classList.remove('hidden');
+            }
+        };
+
+        // ========== API FUNCTIONS ==========
+        function saveApiKey() {
+            const key = document.getElementById('api-key').value.trim();
+            if (!key.startsWith('sk-')) {
+                alert('المفتاح يجب أن يبدأ بـ sk-');
+                return;
+            }
+            API_KEY = key;
+            localStorage.setItem('openai_api_key', key);
+            document.getElementById('api-section').classList.add('hidden');
+            document.getElementById('api-status').classList.remove('hidden');
+            speak('ممتاز! المفتاح محفوظ. يمكنك الآن توليد كلمات ذكية!');
+        }
+
+        async function generateAIWord() {
+            if (!API_KEY) {
+                alert('أدخل مفتاح API أولاً!');
+                document.getElementById('api-section').scrollIntoView({behavior: 'smooth'});
+                return;
+            }
+
+            showLoading(true);
+            updateBubble('جاري تفكير الأستاذ مصطفى الذكي... 🤔');
+
+            try {
+                const prompt = lang === 'ar' 
+                    ? `أعطني كلمة عربية بسيطة للأطفال (3-5 حروف)، مع معناها البسيط. رد بصيغة: الكلمة: [الكلمة] | المعنى: [المعنى]`
+                    : `Give me a simple English word for kids (3-5 letters), with its simple meaning. Reply as: Word: [word] | Meaning: [meaning]`;
+
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-3.5-turbo',
+                        messages: [{role: 'user', content: prompt}],
+                        temperature: 0.9,
+                        max_tokens: 100
+                    })
+                });
+
+                const data = await response.json();
+                const text = data.choices[0].message.content;
+                console.log('AI Response:', text);
+
+                // Parse response
+                const parsed = parseAIResponse(text);
+                currentWord = parsed;
+
+                // Generate image
+                await generateAIImage(parsed.en || parsed.simple);
+
+                displayWord(parsed);
+                showLoading(false);
+                speak(`${lang === 'ar' ? 'كلمة جديدة' : 'New word'}: ${parsed.w}. ${parsed.m}`);
+
+            } catch (error) {
+                console.error(error);
+                showLoading(false);
+                updateBubble('حدث خطأ! جرب مرة أخرى.');
+                // Fallback to local
+                generateLocalWord();
+            }
+        }
+
+        function parseAIResponse(text) {
+            // Try to extract word and meaning
+            let w, m, simple;
+            
+            if (lang === 'ar') {
+                // Arabic format: "الكلمة: قطة | المعنى: حيوان أليف"
+                const wordMatch = text.match(/الكلمة[:\s]+([^\|]+)/);
+                const meanMatch = text.match(/المعنى[:\s]+(.+)/);
+                
+                w = wordMatch ? wordMatch[1].trim() : 'قِط';
+                m = meanMatch ? meanMatch[1].trim() : 'حيوان أليف';
+                simple = w.replace(/[\u064B-\u065F]/g, '');
+            } else {
+                // English format: "Word: CAT | Meaning: a pet animal"
+                const wordMatch = text.match(/Word[:\s]+([^\|]+)/i);
+                const meanMatch = text.match(/Meaning[:\s]+(.+)/i);
+                
+                w = wordMatch ? wordMatch[1].trim().toUpperCase() : 'CAT';
+                m = meanMatch ? meanMatch[1].trim() : 'A pet animal';
+                simple = w.toLowerCase();
+            }
+
+            return {w, m, simple, en: simple};
+        }
+
+        async function generateAIImage(word) {
+            // Use Pollinations.ai for free AI images (no API key needed for images!)
+            const imgUrl = `https://image.pollinations.ai/prompt/cute%20cartoon%20${encodeURIComponent(word)}%20for%20kids%20colorful%20happy?width=400&height=400&nologo=true`;
+            document.getElementById('word-img').src = imgUrl;
+        }
+
+        async function generateAImage() {
+            if (!currentWord) {
+                alert(lang === 'ar' ? 'اختر كلمة أولاً!' : 'Choose a word first!');
+                return;
+            }
+            updateBubble('جاري رسم صورة جديدة... 🎨');
+            await generateAIImage(currentWord.en || currentWord.simple);
+            speak(lang === 'ar' ? 'صورة جديدة!' : 'New image!');
+        }
+
+        // ========== DISPLAY ==========
+        function displayWord(word) {
+            document.getElementById('word-area').classList.remove('hidden');
+            document.getElementById('empty-area').classList.add('hidden');
+            document.getElementById('result').classList.add('hidden');
+
+            document.getElementById('word-text').textContent = word.w;
+            document.getElementById('meaning').textContent = word.m;
+            document.getElementById('debug').textContent = `Target: ${word.simple}`;
+
+            // Letters
+            const lettersDiv = document.getElementById('letters');
+            lettersDiv.innerHTML = '';
+            const letters = word.w.split('');
+            letters.forEach((letter, i) => {
+                const div = document.createElement('div');
+                div.className = 'letter-box';
+                div.id = `letter-${i}`;
+                div.textContent = letter;
+                lettersDiv.appendChild(div);
+            });
+
+            updateBubble(`${lang === 'ar' ? 'كلمة' : 'Word'}: ${word.w}`);
+            setTimeout(() => spellLetters(letters), 2000);
+        }
+
+        async function spellLetters(letters) {
+            updateBubble(lang === 'ar' ? 'لن تهجّاها:' : "Let's spell:");
+            
+            for (let i = 0; i < letters.length; i++) {
+                const box = document.getElementById(`letter-${i}`);
+                box.classList.add('active');
+                speak(letters[i], false);
+                await sleep(600);
+                box.classList.remove('active');
+                await sleep(100);
+            }
+            
+            updateBubble(lang === 'ar' ? 'الآن حاول أنت!' : 'Now you try!');
+        }
+
+        // ========== FALLBACK ==========
+        function generateLocalWord() {
+            const localWords = {
+                ar: [
+                    {w: 'قِط', m: 'حيوان أليف', simple: 'قط'},
+                    {w: 'كَلْب', m: 'صديق وفي', simple: 'كلب'},
+                    {w: 'شَمْس', m: 'تضيء النهار', simple: 'شمس'}
+                ],
+                en: [
+                    {w: 'CAT', m: 'A cute pet', simple: 'cat'},
+                    {w: 'DOG', m: 'Loyal friend', simple: 'dog'},
+                    {w: 'SUN', m: 'Shines bright', simple: 'sun'}
+                ]
+            };
+            
+            const list = localWords[lang];
+            const word = list[Math.floor(Math.random() * list.length)];
+            currentWord = word;
+            
+            // Use placeholder image
+            document.getElementById('word-img').src = `https://placehold.co/400x400/6366f1/ffffff?text=${word.w}`;
+            displayWord(word);
+        }
+
+        // ========== UTILITIES ==========
+        function showLoading(show) {
+            document.getElementById('loading').classList.toggle('hidden', !show);
+            if (show) document.getElementById('word-area').classList.add('hidden');
+        }
+
+        function updateBubble(text) {
+            document.getElementById('bubble').textContent = text;
+        }
+
+        function speak(text, isTeacher = true) {
+            if (!synth) return;
+            synth.cancel();
+            
+            const u = new SpeechSynthesisUtterance(text);
+            u.lang = lang === 'ar' ? 'ar-SA' : 'en-US';
+            u.rate = lang === 'ar' ? 0.8 : 0.9;
+            
+            const avatar = document.getElementById('avatar');
+            if (isTeacher) {
+                avatar.classList.add('talking');
+                u.onend = () => avatar.classList.remove('talking');
+            }
+            
+            synth.speak(u);
+        }
+
+        function hearWord() {
+            if (!currentWord) {
+                updateBubble(lang === 'ar' ? 'اختر كلمة أولاً!' : 'Choose a word first!');
+                speak(lang === 'ar' ? 'اختر كلمة أولاً' : 'Choose a word first');
+                return;
+            }
+            speak(currentWord.w);
+            spellLetters(currentWord.w.split(''));
+        }
+
+        function toggleMic() {
+            if (!('webkitSpeechRecognition' in window)) {
+                alert('المتصفح لا يدعم الصوت');
+                return;
+            }
+            
+            if (isListening) {
+                stopMic();
+                return;
+            }
+            
+            if (!currentWord) {
+                updateBubble(lang === 'ar' ? 'اختر كلمة أولاً!' : 'Choose a word first!');
+                return;
+            }
+            
+            startMic();
+        }
+
+        function startMic() {
+            isListening = true;
+            document.getElementById('mic-btn').classList.add('listening');
+            document.getElementById('mic-status').textContent = lang === 'ar' ? 'أستمع...' : 'Listening...';
+            
+            recognition = new webkitSpeechRecognition();
+            recognition.lang = lang === 'ar' ? 'ar-SA' : 'en-US';
+            
+            recognition.onresult = (e) => {
+                const heard = e.results[0][0].transcript.trim();
+                checkAnswer(heard);
+            };
+            
+            recognition.onerror = () => {
+                showResult(lang === 'ar' ? 'لم أفهم' : "Didn't understand", false);
+                stopMic();
+            };
+            
+            recognition.onend = () => stopMic();
+            recognition.start();
+        }
+
+        function stopMic() {
+            isListening = false;
+            document.getElementById('mic-btn').classList.remove('listening');
+            document.getElementById('mic-status').textContent = lang === 'ar' ? 'اضغط وانطق' : 'Press and speak';
+            if (recognition) recognition.stop();
+        }
+
+        function checkAnswer(heard) {
+            const clean = heard.toLowerCase().replace(/[\u064B-\u065F]/g, '');
+            const target = currentWord.simple.toLowerCase();
+            
+            document.getElementById('debug').textContent = `Heard: "${heard}" → "${clean}" vs "${target}"`;
+            
+            const match = clean === target || clean.includes(target) || target.includes(clean);
+            const praises = lang === 'ar' 
+                ? ['أحسنت! 🌟', 'ممتاز! 🎉', 'رائع! 🏆']
+                : ['Excellent! 🌟', 'Great! 🎉', 'Perfect! 🏆'];
+            
+            if (match) {
+                const praise = praises[Math.floor(Math.random() * praises.length)];
+                showResult(praise, true);
+                speak(praise);
+                celebrate();
+            } else {
+                showResult(lang === 'ar' ? 'حاول مرة أخرى!' : 'Try again!', false);
+            }
+        }
+
+        function showResult(text, success) {
+            const r = document.getElementById('result');
+            r.textContent = text;
+            r.className = success ? 'result-success' : 'result-error';
+            r.classList.remove('hidden');
+        }
+
+        function celebrate() {
+            for (let i = 0; i < 20; i++) {
+                const div = document.createElement('div');
+                div.style.cssText = 'position:fixed;left:50%;top:50%;font-size:2.5rem;pointer-events:none;z-index:9999;';
+                div.textContent = ['🌟', '✨', '🎉', '🌸', '⭐'][Math.floor(Math.random() * 5)];
+                
+                const angle = Math.random() * Math.PI * 2;
+                const dist = 200 + Math.random() * 200;
+                
+                div.animate([
+                    {transform: 'translate(0,0) scale(0)', opacity: 0},
+                    {transform: `translate(${Math.cos(angle)*dist}px,${Math.sin(angle)*dist}px) scale(1.5)`, opacity: 1}
+                ], {duration: 1000, easing: 'ease-out'});
+                
+                document.body.appendChild(div);
+                setTimeout(() => div.remove(), 1000);
+            }
+        }
+
+        function toggleLanguage() {
+            lang = lang === 'ar' ? 'en' : 'ar';
+            document.body.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            document.getElementById('lang-badge').textContent = lang === 'ar' ? '🇪🇬 العربية' : '🇬🇧 English';
+            updateBubble(lang === 'ar' ? 'تم التبديل للعربية!' : 'Switched to English!');
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        function sleep(ms) {
+            return new Promise(r => setTimeout(r, ms));
+        }
+    </script>
+</body>
+</html>
